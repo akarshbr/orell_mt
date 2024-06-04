@@ -8,23 +8,24 @@ class ApiHelper {
     required String baseUrl,
     Map<String, String>? header,
   }) async {
-    log("ApiHelper -> getData()");
+    print("ApiHelper -> getData()");
     final url = Uri.parse(baseUrl);
-    log("url -> $url");
+    print("url -> $url");
     try {
       var response = await http.get(url, headers: header);
-      log("getData -> Status code -> ${response.statusCode}");
-      log("response -> ${response.body.toString()}");
+      print("getData -> Status code -> ${response.statusCode}");
+      print("response -> ${response.body.toString()}");
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
-        return decodedData;
+        var data = {"status": 1, "data": decodedData};
+        return data;
       } else {
-        log("Else Condition -> Api failed");
+        print("Else Condition -> Api failed");
         var decodedData = jsonDecode(response.body);
         return decodedData;
       }
     } catch (e) {
-      log("$e");
+      print("error -> ApiHelper -> getData -> $e");
     }
   }
 
@@ -33,24 +34,26 @@ class ApiHelper {
     Map<String, String>? header,
     required Map<String, dynamic> body,
   }) async {
-    log("ApiHelper -> postData()");
-    log("body -> $body");
+    print("ApiHelper -> postData()");
+    print("body -> ${jsonEncode(body)}");
     final url = Uri.parse(baseUrl);
-    log("url -> $url");
+    print("url -> $url");
     try {
-      var response = await http.post(url, body: body);
-      log("Api Called -> status code -> ${response.statusCode}");
+      var response = await http.post(url, body: jsonEncode(body),headers: header);
+      print("Api Called -> status code -> ${response.statusCode}");
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
         var data = {"status": 1, "data": decodedData};
-        return decodedData;
+        return data;
       } else {
-        log("Else Condition -> Api failed");
+        print("Else Condition -> Api failed");
         var decodedData = jsonDecode(response.body);
-        return decodedData;
+        var data = {"status": 0, "data": decodedData};
+        print("$decodedData");
+        return data;
       }
     } catch (e) {
-      log("$e");
+      print("error -> ApiHelper -> postData -> $e");
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -40,6 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    Provider.of<HomeController>(context, listen: false).fetchAcademicYear();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -68,8 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: DropdownButton(
                                   padding: const EdgeInsets.all(5),
                                   isExpanded: true,
+                                  value: controller.academicYearSelected,
                                   items: controller.dropdownItemsAcademicYear,
-                                  onChanged: (selected) {}),
+                                  onChanged: (selectedAcademicYear) {
+                                    log("selectedAcademicYear -> $selectedAcademicYear");
+                                    controller.setAcademicYear(selectedAcademicYear!);
+                                  }),
                             ),
                           );
                         }),
@@ -113,8 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: DropdownButton(
                                   padding: const EdgeInsets.all(5),
                                   isExpanded: true,
+                                  value: controller.classSemesterSelected,
                                   items: controller.dropdownItemsClassSemester,
-                                  onChanged: (selected) {}),
+                                  onChanged: (selectedClassSemester) {
+                                    log("selectedClassSemester -> $selectedClassSemester");
+                                    controller.setClassSemester(selectedClassSemester!);
+                                  }),
                             ),
                           );
                         }),
@@ -152,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               SizedBox(width: 10),
-                              Text(image==null?"no file chosen":"${image?.path}",
+                              Text(image == null ? "no file chosen" : "${image?.path}",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo.shade300))
                             ],
@@ -182,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 50,
                   decoration: BoxDecoration(color: Colors.pink.shade100),
                   alignment: Alignment.center,
-                  child: Text("Student Login",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+                  child: Text("Student Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -223,6 +238,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 InkWell(
                   onTap: () {
                     var valid = formKey.currentState!.validate();
+                    if (valid == true) {
+                      print(studentNameController.text.trim());
+                      print(userNameController.text.trim());
+                      print(contactNumberController.text.trim());
+                      print(addressController.text.trim());
+                      print(emailController.text.trim());
+                      print(whatsappNumberController.text.trim());
+                      print(confirmPasswordController.text.trim());
+                      print(Provider.of<HomeController>(context, listen: false).classSemesterSelected);
+                      print(Provider.of<HomeController>(context, listen: false).academicYearSelected);
+
+                      Provider.of<HomeController>(context, listen: false).onSave(
+                          context,
+                          image,
+                          studentNameController.text.trim(),
+                          userNameController.text.trim(),
+                          contactNumberController.text.trim(),
+                          addressController.text.trim(),
+                          emailController.text.trim(),
+                          whatsappNumberController.text.trim(),
+                          confirmPasswordController.text.trim());
+
+                      // Provider.of<HomeController>(context, listen: false).onRegister(
+                      //     context,
+                      //     image,
+                      //     studentNameController.text.trim(),
+                      //     userNameController.text.trim(),
+                      //     contactNumberController.text.trim(),
+                      //     addressController.text.trim(),
+                      //     emailController.text.trim(),
+                      //     whatsappNumberController.text.trim(),
+                      //     confirmPasswordController.text.trim());
+                    }
                   },
                   child: Container(
                     height: 60,
